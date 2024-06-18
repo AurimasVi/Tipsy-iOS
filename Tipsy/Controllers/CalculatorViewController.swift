@@ -8,7 +8,6 @@ class CalculatorViewController: UIViewController, UITextFieldDelegate {
     var eachPersonPays: Double = 0
 
     @IBOutlet weak var billTextField: UITextField!
-    
     @IBOutlet weak var zeroPctButton: UIButton!
     @IBOutlet weak var tenPctButton: UIButton!
     @IBOutlet weak var twentyPctButton: UIButton!
@@ -45,7 +44,7 @@ class CalculatorViewController: UIViewController, UITextFieldDelegate {
 
     @IBAction func stepperValueChanged(_ sender: UIStepper) {
         splitNumberLabel.text = String(Int(sender.value))
-        splitNumber = Int(splitNumberLabel.text!)!
+        splitNumber = Int(sender.value)
     }
     
     @IBAction func calculatePressed(_ sender: UIButton) {
@@ -72,7 +71,21 @@ class CalculatorViewController: UIViewController, UITextFieldDelegate {
         let finalAmount = totalBill + tipAmount
         eachPersonPays = (finalAmount / Double(splitNumber)).rounded(toPlaces: 2)
         
-        print("Each person pays: \(String(format: "%.2f", eachPersonPays))")
+        
+        // Instantiate ResultsViewController from storyboard
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        guard let destinationController = storyboard.instantiateViewController(withIdentifier: "ResultsViewController") as? ResultsViewController else {
+            return
+        }
+        
+        // Pass data to ResultsViewController
+        destinationController.totalBill = totalBill
+        destinationController.tipPercentage = tip * 100
+        destinationController.splitNumber = splitNumber
+        destinationController.eachPersonPays = eachPersonPays
+        
+        // Present the ResultsViewController
+        self.present(destinationController, animated: true, completion: nil)
     }
 }
 
